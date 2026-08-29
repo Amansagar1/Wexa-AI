@@ -29,18 +29,13 @@ function App() {
   const [pathLoading, setPathLoading] = useState(false);
 
   const performSearch = async (query) => {
-    if (!query.trim()) {
-      setResults([]);
-      return;
-    }
-    
     setLoading(true);
     setResults([]);
     setSelectedPerson(null);
     setViewMode('explore');
     
     try {
-      const data = await apiControllers.searchNodes(query);
+      const data = await apiControllers.searchNodes(query || "");
       setResults(data.results);
     } catch (err) {
       toast.error("Cannot connect to database. Make sure backend is running.");
@@ -49,14 +44,16 @@ function App() {
     }
   };
 
+  // Initial load
+  useEffect(() => {
+    performSearch('');
+  }, []);
+
   // Real-time debounced search
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (searchQuery.trim()) {
-        performSearch(searchQuery);
-      } else {
-        setResults([]);
-      }
+      // If user clears the box, it fetches default nodes
+      performSearch(searchQuery);
     }, 300);
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);

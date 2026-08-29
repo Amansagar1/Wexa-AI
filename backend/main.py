@@ -38,13 +38,25 @@ def health_check():
     return {"status": "healthy", "database": "connected" if db.driver else "disconnected"}
 
 @app.get("/api/search")
-def search_nodes(q: str):
+def search_nodes(q: str = ""):
     """
     Search for Person, Company, or Skill by matching any word in the query.
+    If query is empty, returns a default set of nodes.
     """
     words = [word.lower() for word in q.split() if word.strip()]
+    
     if not words:
-        return {"results": []}
+        query = """
+        MATCH (n)
+        WHERE n:Person OR n:Company OR n:Skill
+        RETURN elementId(n) AS id, labels(n)[0] AS type, n.name AS name, n.role AS role, n.industry AS industry
+        LIMIT 20
+        """
+        try:
+            results = db.execute_query(query)
+            return {"results": results}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
         
     query = """
     MATCH (n)
