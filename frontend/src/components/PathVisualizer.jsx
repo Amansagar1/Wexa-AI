@@ -4,6 +4,7 @@ import ForceGraph2D from 'react-force-graph-2d';
 export default function PathVisualizer({ pathData }) {
   const containerRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [linkDistance, setLinkDistance] = useState(100);
 
   const fgRef = useRef();
 
@@ -28,13 +29,16 @@ export default function PathVisualizer({ pathData }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [pathData]);
 
-  // Adjust physics forces when graph data changes
+  // Adjust physics forces when graph data or linkDistance changes
   useEffect(() => {
     if (fgRef.current) {
-      fgRef.current.d3Force('charge').strength(-600); // Push nodes further apart
-      fgRef.current.d3Force('link').distance(150); // Make links longer
+      fgRef.current.d3Force('charge').strength(-600); // Push nodes apart
+      fgRef.current.d3Force('link').distance(linkDistance); // Apply dynamic link distance
+      
+      // Re-heat the simulation so it moves when the slider changes
+      fgRef.current.d3ReheatSimulation();
     }
-  }, [pathData]);
+  }, [pathData, linkDistance]);
 
   if (!pathData) return null;
   if (!pathData.nodes || pathData.nodes.length === 0) {
@@ -67,10 +71,27 @@ export default function PathVisualizer({ pathData }) {
   };
 
   return (
-    <div className="path-result-container animate-fade-in-up" ref={containerRef} style={{ width: '100%', height: '600px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-light)', padding: 0, marginTop: '2rem', position: 'relative', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
+    <div className="path-result-container animate-fade-in-up" style={{ width: '100%', marginTop: '2rem' }}>
       
-      {/* Sleek Professional Legend Overlay */}
-      <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 10, background: 'rgba(15,20,30,0.9)', padding: '12px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)', color: 'white', minWidth: '150px', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+      {/* Graph Controls */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', alignItems: 'center', gap: '12px' }}>
+        <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 500 }}>
+          Link Distance: {linkDistance}px
+        </label>
+        <input 
+          type="range" 
+          min="30" 
+          max="300" 
+          value={linkDistance} 
+          onChange={(e) => setLinkDistance(Number(e.target.value))}
+          style={{ width: '150px', accentColor: 'var(--primary)', cursor: 'pointer' }}
+        />
+      </div>
+
+      <div ref={containerRef} style={{ width: '100%', height: '600px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-light)', padding: 0, position: 'relative', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
+        
+        {/* Sleek Professional Legend Overlay */}
+        <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 10, background: 'rgba(15,20,30,0.9)', padding: '12px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)', color: 'white', minWidth: '150px', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
         <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', fontWeight: '700' }}>Node Labels</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
           <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#3b82f6' }}></div>
@@ -184,6 +205,7 @@ export default function PathVisualizer({ pathData }) {
           ctx.fill();
         }}
       />
+      </div>
     </div>
   );
 }
