@@ -28,6 +28,15 @@ graph TD
 * **Backend API**: Python + FastAPI + Official Neo4j Driver
 * **Frontend**: React (Vite) + Vanilla CSS (Glassmorphism & Dark Mode)
 
+## Hosted Demo & Walkthrough
+* **Live Application:** [Insert Vercel Link Here]
+* **Video Walkthrough:** [Insert Loom/YouTube Link Here]
+
+## Screenshots
+*(Replace these placeholders with actual screenshots of your application)*
+![Explore Network Dashboard](./placeholder1.png)
+![Shortest Path Visualizer](./placeholder2.png)
+
 ## Setup and Run Instructions
 
 ### 1. Database Setup

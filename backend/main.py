@@ -132,13 +132,29 @@ def create_node(node: NodeCreate):
     if node.type not in ["Person", "Skill", "Company"]:
         raise HTTPException(status_code=400, detail="Invalid node type. Must be Person, Skill, or Company.")
     
-    # Label is safe from injection because of the strict check above
-    query = f"""
-    CREATE (n:{node.type} {{name: $name}})
-    SET n.role = CASE WHEN $role IS NOT NULL THEN $role ELSE n.role END,
-        n.industry = CASE WHEN $industry IS NOT NULL THEN $industry ELSE n.industry END
-    RETURN elementId(n) AS id, labels(n)[0] AS type, n.name AS name, n.role AS role, n.industry AS industry
-    """
+    if node.type == "Person":
+        query = """
+        CREATE (n:Person {name: $name})
+        SET n.role = CASE WHEN $role IS NOT NULL THEN $role ELSE n.role END,
+            n.industry = CASE WHEN $industry IS NOT NULL THEN $industry ELSE n.industry END
+        RETURN elementId(n) AS id, labels(n)[0] AS type, n.name AS name, n.role AS role, n.industry AS industry
+        """
+    elif node.type == "Company":
+        query = """
+        CREATE (n:Company {name: $name})
+        SET n.role = CASE WHEN $role IS NOT NULL THEN $role ELSE n.role END,
+            n.industry = CASE WHEN $industry IS NOT NULL THEN $industry ELSE n.industry END
+        RETURN elementId(n) AS id, labels(n)[0] AS type, n.name AS name, n.role AS role, n.industry AS industry
+        """
+    elif node.type == "Skill":
+        query = """
+        CREATE (n:Skill {name: $name})
+        SET n.role = CASE WHEN $role IS NOT NULL THEN $role ELSE n.role END,
+            n.industry = CASE WHEN $industry IS NOT NULL THEN $industry ELSE n.industry END
+        RETURN elementId(n) AS id, labels(n)[0] AS type, n.name AS name, n.role AS role, n.industry AS industry
+        """
+    else:
+        raise HTTPException(status_code=400, detail="Invalid node type")
     try:
         results = db.execute_query(query, {
             "name": node.name,
