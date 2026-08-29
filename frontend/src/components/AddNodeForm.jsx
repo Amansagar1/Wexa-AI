@@ -56,7 +56,7 @@ export default function AddNodeForm({ onNodeAdded }) {
             <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Name (Required)</label>
             <input 
               type="text" 
-              placeholder="e.g. John Doe, OpenAI, Python"
+              placeholder="e.g. Aman Sagar, OpenAI, Python"
               value={formData.name}
               onChange={e => setFormData({...formData, name: e.target.value})}
               className="search-input"
