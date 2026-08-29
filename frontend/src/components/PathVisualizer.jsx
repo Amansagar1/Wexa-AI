@@ -57,36 +57,36 @@ export default function PathVisualizer({ pathData }) {
   };
 
   return (
-    <div className="path-result-container animate-fade-in-up" ref={containerRef} style={{ width: '100%', height: '600px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)', padding: 0, marginTop: '2rem', position: 'relative' }}>
+    <div className="path-result-container animate-fade-in-up" ref={containerRef} style={{ width: '100%', height: '600px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-light)', padding: 0, marginTop: '2rem', position: 'relative', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
       
-      {/* Legend Overlay (Like Neo4j Browser) */}
-      <div style={{ position: 'absolute', top: 15, left: 15, zIndex: 10, background: 'rgba(20,25,40,0.85)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', color: 'white', minWidth: '180px' }}>
-        <div style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', fontWeight: '600' }}>Node Labels</div>
+      {/* Sleek Professional Legend Overlay */}
+      <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 10, background: 'rgba(15,20,30,0.9)', padding: '12px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)', color: 'white', minWidth: '150px', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+        <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', fontWeight: '700' }}>Node Labels</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-          <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#3b82f6', boxShadow: 'inset -2px -2px 4px rgba(0,0,0,0.5)' }}></div>
-          <span style={{ fontSize: '13px', fontWeight: '500' }}>Person</span>
+          <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#3b82f6' }}></div>
+          <span style={{ fontSize: '11px', fontWeight: '500', color: '#e2e8f0' }}>Person</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-          <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444', boxShadow: 'inset -2px -2px 4px rgba(0,0,0,0.5)' }}></div>
-          <span style={{ fontSize: '13px', fontWeight: '500' }}>Skill</span>
+          <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ef4444' }}></div>
+          <span style={{ fontSize: '11px', fontWeight: '500', color: '#e2e8f0' }}>Skill</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '15px' }}>
-          <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#10b981', boxShadow: 'inset -2px -2px 4px rgba(0,0,0,0.5)' }}></div>
-          <span style={{ fontSize: '13px', fontWeight: '500' }}>Company</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+          <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#10b981' }}></div>
+          <span style={{ fontSize: '11px', fontWeight: '500', color: '#e2e8f0' }}>Company</span>
         </div>
         
-        <div style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', fontWeight: '600' }}>Relationships</div>
+        <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', fontWeight: '700' }}>Relationships</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-          <div style={{ width: '20px', height: '1px', background: 'rgba(255,255,255,0.4)' }}></div>
-          <span style={{ fontSize: '12px', color: '#cbd5e1' }}>KNOWS_PERSON</span>
+          <div style={{ width: '16px', height: '1px', background: 'rgba(255,255,255,0.3)' }}></div>
+          <span style={{ fontSize: '10px', color: '#94a3b8' }}>KNOWS_PERSON</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-          <div style={{ width: '20px', height: '1px', background: 'rgba(255,255,255,0.4)' }}></div>
-          <span style={{ fontSize: '12px', color: '#cbd5e1' }}>KNOWS_SKILL</span>
+          <div style={{ width: '16px', height: '1px', background: 'rgba(255,255,255,0.3)' }}></div>
+          <span style={{ fontSize: '10px', color: '#94a3b8' }}>KNOWS_SKILL</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ width: '20px', height: '1px', background: 'rgba(255,255,255,0.4)' }}></div>
-          <span style={{ fontSize: '12px', color: '#cbd5e1' }}>WORKED_AT</span>
+          <div style={{ width: '16px', height: '1px', background: 'rgba(255,255,255,0.3)' }}></div>
+          <span style={{ fontSize: '10px', color: '#94a3b8' }}>WORKED_AT</span>
         </div>
       </div>
 
