@@ -1,4 +1,4 @@
-export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+export const API_BASE = 'https://wexa-ai-backend.vercel.app/api';
 
 export const URLS = {
   SEARCH: `${API_BASE}/search`,
