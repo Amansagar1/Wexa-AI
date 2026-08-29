@@ -33,9 +33,9 @@ graph TD
 * **Video Walkthrough:** [Insert Loom/YouTube Link Here]
 
 ## Screenshots
-*(Replace these placeholders with actual screenshots of your application)*
-![Explore Network Dashboard](./placeholder1.png)
-![Shortest Path Visualizer](./placeholder2.png)
+![Explore Network Dashboard](./screenshots/explore.png)
+![Shortest Path Visualizer 1](./screenshots/path1.png)
+![Shortest Path Visualizer 2](./screenshots/path2.png)
 
 ## Setup and Run Instructions
 
