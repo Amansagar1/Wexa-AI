@@ -10,7 +10,7 @@ app = FastAPI(title="Six Degrees of Tech API")
 # Configure CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"], # Allow explicit frontend origins
+    allow_origins=["*"], # Allow all origins for production deployment
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
