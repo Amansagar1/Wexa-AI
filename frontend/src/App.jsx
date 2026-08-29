@@ -178,6 +178,12 @@ function App() {
               <p>No results found for "{searchQuery}". Try a different term.</p>
             </div>
           )}
+
+          {!loading && results.length === 0 && !searchQuery && (
+            <div className="glass-panel empty-state" style={{ marginTop: '2rem' }}>
+              <p>Your network is currently empty. Use the "Add Data" tab to create your first nodes!</p>
+            </div>
+          )}
         </div>
       )}
 

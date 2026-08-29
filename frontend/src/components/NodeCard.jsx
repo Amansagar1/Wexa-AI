@@ -14,7 +14,6 @@ export default function NodeCard({ node, onClick, index, customStyle = {} }) {
       className={`glass-panel node-card animate-fade-in-up ${isPerson ? 'clickable' : ''}`}
       style={{ 
         animationDelay: `${index * 0.05}s`,
-        opacity: 0,
         ...customStyle
       }} 
       onClick={() => isPerson && onClick && onClick(node)}
