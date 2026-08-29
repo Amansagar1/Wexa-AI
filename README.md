@@ -36,6 +36,7 @@ graph TD
 ![Explore Network Dashboard](./screenshots/explore.png)
 ![Shortest Path Visualizer 1](./screenshots/path1.png)
 ![Shortest Path Visualizer 2](./screenshots/path2.png)
+![Add New Data Form](./screenshots/add_data.png)
 
 ## Setup and Run Instructions
 
