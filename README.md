@@ -30,7 +30,7 @@ graph TD
 
 ## Hosted Demo & Walkthrough
 * **Live Application:** [Insert Vercel Link Here]
-* **Video Walkthrough:** [Insert Loom/YouTube Link Here]
+* **Video Walkthrough:** [Watch Demo Video](./29.08.2026_10.55.46_REC.mp4)
 
 ## Screenshots
 ![Explore Network Dashboard](./screenshots/explore.png)
