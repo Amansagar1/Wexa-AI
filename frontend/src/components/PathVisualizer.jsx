@@ -105,9 +105,9 @@ export default function PathVisualizer({ pathData }) {
         // Rich Tooltip on Hover
         nodeLabel={(node) => `
           <div style="background: rgba(15,20,30,0.95); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); font-family: Inter, sans-serif; color: white;">
-            <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">${node.name}</div>
-            <div style="color: #94a3b8; font-size: 12px; margin-bottom: 8px;">Type: <span style="color: #38bdf8;">${node.group}</span></div>
-            ${Object.entries(node.properties).filter(([k]) => k !== 'name').map(([k, v]) => 
+            <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">${node.name || 'Unknown'}</div>
+            <div style="color: #94a3b8; font-size: 12px; margin-bottom: 8px;">Type: <span style="color: #38bdf8;">${node.group || 'Unknown'}</span></div>
+            ${Object.entries(node.properties || {}).filter(([k]) => k !== 'name').map(([k, v]) => 
               `<div style="font-size: 11px; margin-top: 2px;"><strong style="color: #cbd5e1;">${k}:</strong> ${v}</div>`
             ).join('')}
           </div>
@@ -116,14 +116,17 @@ export default function PathVisualizer({ pathData }) {
         // Draw Text on Links
         linkCanvasObjectMode={() => 'after'}
         linkCanvasObject={(link, ctx, globalScale) => {
+          if (!link.source || !link.target || typeof link.source !== 'object' || typeof link.target !== 'object' || typeof link.source.x !== 'number') return;
+          
           const MAX_FONT_SIZE = 4;
           const label = link.label;
           const fontSize = Math.min(MAX_FONT_SIZE, 12 / globalScale);
           ctx.font = `${fontSize}px Inter, Sans-Serif`;
           
-          const textPos = Object.assign(...['x', 'y'].map(c => ({
-            [c]: link.source[c] + (link.target[c] - link.source[c]) / 2 // calc middle point
-          })));
+          const textPos = {
+            x: link.source.x + (link.target.x - link.source.x) / 2,
+            y: link.source.y + (link.target.y - link.source.y) / 2
+          };
           
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
@@ -133,7 +136,9 @@ export default function PathVisualizer({ pathData }) {
         
         // Custom 3D Nodes and Labels
         nodeCanvasObject={(node, ctx, globalScale) => {
-          const label = node.name;
+          if (!node || typeof node.x !== 'number' || typeof node.y !== 'number') return;
+          
+          const label = node.name || '';
           const fontSize = 12 / globalScale;
           const colors = getNodeColor(node.group);
           const r = 8;
@@ -161,6 +166,7 @@ export default function PathVisualizer({ pathData }) {
           ctx.fillText(label, node.x, node.y + r + (4/globalScale));
         }}
         nodePointerAreaPaint={(node, color, ctx) => {
+          if (!node || typeof node.x !== 'number' || typeof node.y !== 'number') return;
           ctx.fillStyle = color;
           ctx.beginPath();
           ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI, false);
