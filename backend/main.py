@@ -7,10 +7,10 @@ from database import db
 
 app = FastAPI(title="Six Degrees of Tech API")
 
-# Configure CORS for frontend access
+# ---------------Configure CORS for frontend access -------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow all origins for production deployment
+    allow_origins=["*"], # ---------------Allow all origins for production deployment -------------
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -18,7 +18,7 @@ app.add_middleware(
 
 @app.on_event("startup")
 def startup_event():
-    # Connect to the database on startup
+    # ---------------Connect to the database on startup -------------
     db.connect()
 
 @app.on_event("shutdown")

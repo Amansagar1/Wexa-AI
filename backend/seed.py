@@ -10,7 +10,7 @@ def wipe_database():
 
 def create_schema():
     print("Creating indexes...")
-    # These create index commands help make searching by name fast
+    # ---------------These create index commands help make searching by name fast -------------
     indexes = [
         "CREATE INDEX IF NOT EXISTS FOR (p:Person) ON (p.name)",
         "CREATE INDEX IF NOT EXISTS FOR (c:Company) ON (c.name)",
@@ -20,26 +20,26 @@ def create_schema():
         try:
             db.execute_query(q)
         except Exception as e:
-            # If it already exists, just continue
+            # ---------------If it already exists, just continue -------------
             pass
 
 def seed_data(num_people=50, num_companies=10, num_skills=20):
     print("Seeding new data...")
     
-    # 1. Create Skills
+    # ---------------1. Create Skills -------------
     skills = [
         "Python", "JavaScript", "React", "Node.js", "GraphQL", 
         "Neo4j", "PostgreSQL", "AWS", "Docker", "Kubernetes",
         "Machine Learning", "Data Science", "FastAPI", "TypeScript",
         "Go", "Rust", "UI/UX", "Project Management", "Agile", "DevOps"
     ]
-    # Ensure we use the exact number requested (or limit to available)
+    # ---------------Ensure we use the exact number requested (or limit to available) -------------
     skills = random.sample(skills, min(num_skills, len(skills)))
     
     for skill in skills:
         db.execute_query("CREATE (s:Skill {name: $name})", {"name": skill})
         
-    # 2. Create Companies
+    # ---------------2. Create Companies -------------
     companies = []
     industries = ["Fintech", "Healthtech", "E-commerce", "AI/ML", "SaaS", "Cybersecurity"]
     for _ in range(num_companies):
@@ -51,10 +51,10 @@ def seed_data(num_people=50, num_companies=10, num_skills=20):
             {"name": c_name, "industry": c_ind}
         )
         
-    # 3. Create People
+    # ---------------3. Create People -------------
     roles = ["Software Engineer", "Data Scientist", "Product Manager", "Designer", "DevOps Engineer", "CTO"]
     
-    # Manually add Demo first!
+    # ---------------Manually add Demo first! -------------
     people = ["Demo"]
     db.execute_query(
         "CREATE (p:Person {name: $name, role: $role})",
@@ -70,15 +70,15 @@ def seed_data(num_people=50, num_companies=10, num_skills=20):
             {"name": p_name, "role": p_role}
         )
         
-    # 4. Create Relationships (WORKED_AT)
+    # ---------------4. Create Relationships (WORKED_AT) -------------
     print("Drawing WORKED_AT relationships...")
     for person in people:
-        # Each person worked at 1 to 3 companies
+        # ---------------Each person worked at 1 to 3 companies -------------
         worked_at = random.sample(companies, random.randint(1, 3))
         for company in worked_at:
             start_year = random.randint(2010, 2022)
             end_year = start_year + random.randint(1, 5)
-            # 20% chance they still work there
+            # ---------------20% chance they still work there -------------
             if random.random() < 0.2:
                 end_year = "Present"
                 
@@ -93,10 +93,10 @@ def seed_data(num_people=50, num_companies=10, num_skills=20):
                 "end_year": end_year
             })
             
-    # 5. Create Relationships (KNOWS_SKILL)
+    # ---------------5. Create Relationships (KNOWS_SKILL) -------------
     print("Drawing KNOWS_SKILL relationships...")
     for person in people:
-        # Each person knows 2 to 5 skills
+        # ---------------Each person knows 2 to 5 skills -------------
         known_skills = random.sample(skills, random.randint(2, 5))
         for skill in known_skills:
             db.execute_query("""
@@ -108,10 +108,10 @@ def seed_data(num_people=50, num_companies=10, num_skills=20):
                 "skill_name": skill
             })
             
-    # 6. Create Relationships (KNOWS_PERSON)
+    # ---------------6. Create Relationships (KNOWS_PERSON) -------------
     print("Drawing KNOWS_PERSON relationships...")
     for person in people:
-        # Each person knows 1 to 5 other people
+        # ---------------Each person knows 1 to 5 other people -------------
         connections = random.sample([p for p in people if p != person], random.randint(1, 5))
         for connection in connections:
             db.execute_query("""

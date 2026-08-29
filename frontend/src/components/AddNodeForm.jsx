@@ -22,7 +22,7 @@ export default function AddNodeForm({ onNodeAdded }) {
     try {
       const res = await apiControllers.createNode(formData);
       toast.success(res.message || 'Node created successfully!');
-      setFormData({ type: 'Person', name: '', role: '', industry: '' }); // Reset form
+      setFormData({ type: 'Person', name: '', role: '', industry: '' }); // ---------------Reset form -------------
       if (onNodeAdded) onNodeAdded(res.node);
     } catch (err) {
       console.error(err);

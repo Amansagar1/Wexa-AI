@@ -2,8 +2,8 @@ import os
 from neo4j import GraphDatabase
 from dotenv import load_dotenv
 
-# Load environment variables (handling both local and deployed scenarios)
-# In development, it loads from .env in the backend folder
+# ---------------Load environment variables (handling both local and deployed scenarios) -------------
+# ---------------In development, it loads from .env in the backend folder -------------
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'))
 
 URI = os.getenv("NEO4J_URI")
@@ -39,5 +39,5 @@ class Database:
             print(f"Query execution failed: {e}")
             raise e
 
-# Singleton instance
+# ---------------Singleton instance -------------
 db = Database()

@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 export default function NodeCard({ node, onClick, index, customStyle = {} }) {
   const isPerson = node.type === 'Person';
   
-  // Badge styling logic
+  // ---------------Badge styling logic -------------
   let badgeClass = "badge-person";
   if (node.type === 'Skill') badgeClass = "badge-skill";
   if (node.type === 'Company') badgeClass = "badge-company";

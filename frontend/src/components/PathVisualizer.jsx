@@ -29,13 +29,13 @@ export default function PathVisualizer({ pathData }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [pathData]);
 
-  // Adjust physics forces when graph data or linkDistance changes
+  // ---------------Adjust physics forces when graph data or linkDistance changes -------------
   useEffect(() => {
     if (fgRef.current) {
-      fgRef.current.d3Force('charge').strength(-600); // Push nodes apart
-      fgRef.current.d3Force('link').distance(linkDistance); // Apply dynamic link distance
+      fgRef.current.d3Force('charge').strength(-600); // ---------------Push nodes apart -------------
+      fgRef.current.d3Force('link').distance(linkDistance); // ---------------Apply dynamic link distance -------------
       
-      // Re-heat the simulation so it moves when the slider changes
+      // ---------------Re-heat the simulation so it moves when the slider changes -------------
       fgRef.current.d3ReheatSimulation();
     }
   }, [pathData, linkDistance]);
@@ -45,7 +45,7 @@ export default function PathVisualizer({ pathData }) {
     return <p className="empty-state">No path found between these nodes.</p>;
   }
 
-  // Format data for ForceGraph
+  // ---------------Format data for ForceGraph -------------
   const graphData = {
     nodes: pathData.nodes.map(n => ({
       id: n.id,
@@ -134,7 +134,7 @@ export default function PathVisualizer({ pathData }) {
         backgroundColor="#0b0f19"
         d3VelocityDecay={0.2}
         
-        // Rich Tooltip on Hover
+        // ---------------Rich Tooltip on Hover -------------
         nodeLabel={(node) => `
           <div style="background: rgba(15,20,30,0.95); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); font-family: Inter, sans-serif; color: white;">
             <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">${node.name || 'Unknown'}</div>
@@ -145,7 +145,7 @@ export default function PathVisualizer({ pathData }) {
           </div>
         `}
         
-        // Draw Text on Links
+        // ---------------Draw Text on Links -------------
         linkCanvasObjectMode={() => 'after'}
         linkCanvasObject={(link, ctx, globalScale) => {
           if (!link.source || !link.target || typeof link.source !== 'object' || typeof link.target !== 'object' || typeof link.source.x !== 'number') return;
@@ -166,16 +166,16 @@ export default function PathVisualizer({ pathData }) {
           ctx.fillText(label, textPos.x, textPos.y);
         }}
         
-        // Custom 3D Nodes and Labels
+        // ---------------Custom 3D Nodes and Labels -------------
         nodeCanvasObject={(node, ctx, globalScale) => {
           if (!node || typeof node.x !== 'number' || typeof node.y !== 'number') return;
           
           const label = node.name || '';
           const fontSize = 10 / globalScale;
           const colors = getNodeColor(node.group);
-          const r = 6; // Smaller radius
+          const r = 6; // ---------------Smaller radius -------------
           
-          // Draw 3D Sphere Node
+          // ---------------Draw 3D Sphere Node -------------
           const gradient = ctx.createRadialGradient(node.x - r/3, node.y - r/3, r/10, node.x, node.y, r);
           gradient.addColorStop(0, colors.light);
           gradient.addColorStop(1, colors.main);
@@ -184,13 +184,13 @@ export default function PathVisualizer({ pathData }) {
           ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
           ctx.fillStyle = gradient;
           
-          // Outer Glow
+          // ---------------Outer Glow -------------
           ctx.shadowColor = colors.main;
           ctx.shadowBlur = 10;
           ctx.fill();
-          ctx.shadowBlur = 0; // Reset
+          ctx.shadowBlur = 0; // ---------------Reset -------------
           
-          // Draw Text below node
+          // ---------------Draw Text below node -------------
           ctx.font = `600 ${fontSize}px Inter, Sans-Serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';

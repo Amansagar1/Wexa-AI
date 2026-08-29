@@ -6,23 +6,23 @@ import PathVisualizer from './components/PathVisualizer';
 import AddNodeForm from './components/AddNodeForm';
 import { apiControllers } from './api/controllers';
 
-// Default target skill for recommendations
+// ---------------Default target skill for recommendations -------------
 const TARGET_SKILL = "React";
 
 function App() {
-  const [viewMode, setViewMode] = useState('explore'); // explore, path
+  const [viewMode, setViewMode] = useState('explore'); // ---------------explore, path -------------
   
-  // Explore State
+  // ---------------Explore State -------------
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   
-  // Recommend State
+  // ---------------Recommend State -------------
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [recLoading, setRecLoading] = useState(false);
   
-  // Path State
+  // ---------------Path State -------------
   const [pathStartId, setPathStartId] = useState('');
   const [pathEndId, setPathEndId] = useState('');
   const [pathData, setPathData] = useState(null);
@@ -44,15 +44,15 @@ function App() {
     }
   };
 
-  // Initial load
+  // ---------------Initial load -------------
   useEffect(() => {
     performSearch('');
   }, []);
 
-  // Real-time debounced search
+  // ---------------Real-time debounced search -------------
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      // If user clears the box, it fetches default nodes
+      // ---------------If user clears the box, it fetches default nodes -------------
       performSearch(searchQuery);
     }, 300);
     return () => clearTimeout(timeoutId);
@@ -66,7 +66,7 @@ function App() {
   const loadRecommendations = async (person) => {
     setSelectedPerson(person);
     setRecLoading(true);
-    // Smooth scroll up
+    // ---------------Smooth scroll up -------------
     window.scrollTo({ top: 0, behavior: 'smooth' });
     try {
       const data = await apiControllers.getRecommendations(person.id, TARGET_SKILL);
