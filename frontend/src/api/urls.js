@@ -4,4 +4,5 @@ export const URLS = {
   SEARCH: `${API_BASE}/search`,
   RECOMMEND: (personId) => `${API_BASE}/recommend/${encodeURIComponent(personId)}`,
   PATH: `${API_BASE}/path`,
+  CREATE_NODE: `${API_BASE}/nodes`,
 };

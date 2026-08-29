@@ -106,5 +106,38 @@ def get_recommendations(person_id: str, skill: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
+class NodeCreate(BaseModel):
+    type: str
+    name: str
+    role: Optional[str] = None
+    industry: Optional[str] = None
+
+@app.post("/api/nodes")
+def create_node(node: NodeCreate):
+    """
+    Create a new isolated node in the graph.
+    """
+    if node.type not in ["Person", "Skill", "Company"]:
+        raise HTTPException(status_code=400, detail="Invalid node type. Must be Person, Skill, or Company.")
+    
+    # Label is safe from injection because of the strict check above
+    query = f"""
+    CREATE (n:{node.type} {{name: $name}})
+    SET n.role = CASE WHEN $role IS NOT NULL THEN $role ELSE n.role END,
+        n.industry = CASE WHEN $industry IS NOT NULL THEN $industry ELSE n.industry END
+    RETURN elementId(n) AS id, labels(n)[0] AS type, n.name AS name, n.role AS role, n.industry AS industry
+    """
+    try:
+        results = db.execute_query(query, {
+            "name": node.name,
+            "role": node.role,
+            "industry": node.industry
+        })
+        if not results:
+            raise HTTPException(status_code=500, detail="Failed to create node")
+        return {"node": results[0], "message": "Node created successfully!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

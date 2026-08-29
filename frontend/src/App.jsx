@@ -3,6 +3,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import SearchBox from './components/SearchBox';
 import NodeCard from './components/NodeCard';
 import PathVisualizer from './components/PathVisualizer';
+import AddNodeForm from './components/AddNodeForm';
 import { apiControllers } from './api/controllers';
 
 // Default target skill for recommendations
@@ -137,8 +138,26 @@ function App() {
           >
             Find Shortest Path
           </button>
+          <button 
+            className={viewMode === 'create' ? 'btn-primary' : 'btn-secondary'} 
+            onClick={() => {
+              setViewMode('create');
+              setSelectedPerson(null);
+            }}
+          >
+            Add Data
+          </button>
         </div>
       </div>
+
+      {viewMode === 'create' && (
+        <div className="animate-fade-in-up">
+          <AddNodeForm onNodeAdded={(node) => {
+            setViewMode('explore');
+            setSearchQuery(node.name);
+          }} />
+        </div>
+      )}
 
       {viewMode === 'explore' && !selectedPerson && (
         <div className="animate-fade-in-up">
