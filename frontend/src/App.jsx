@@ -104,7 +104,19 @@ function App() {
 
   return (
     <div className="app-container">
-      <Toaster position="bottom-center" />
+      <Toaster 
+        position="bottom-center" 
+        toastOptions={{
+          style: {
+            background: 'rgba(20, 20, 30, 0.9)',
+            color: '#fff',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '100px',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+          }
+        }} 
+      />
       <div className="header-container animate-fade-in-down">
         <h1 className="main-title">Six Degrees of Tech</h1>
         <p className="subtitle">Explore connections between People, Companies, and Skills in the Graph.</p>
