@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-hot-toast';
 
 export default function NodeCard({ node, onClick, index, customStyle = {} }) {
   const isPerson = node.type === 'Person';
@@ -41,6 +42,19 @@ export default function NodeCard({ node, onClick, index, customStyle = {} }) {
           </svg>
         </div>
       )}
+
+      {/* Node ID display for Path Visualizer */}
+      <div 
+        className="node-id-tag" 
+        onClick={(e) => {
+          e.stopPropagation();
+          navigator.clipboard.writeText(node.id);
+          toast.success('ID copied to clipboard!', { style: { background: '#1e293b', color: '#f8fafc' }});
+        }}
+        title="Click to copy ID"
+      >
+        <span className="id-label">ID:</span> {node.id}
+      </div>
       
       {/* Show mutual connections if available */}
       {node.mutual_connections !== undefined && (

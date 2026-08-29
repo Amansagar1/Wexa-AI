@@ -40,17 +40,21 @@ def health_check():
 @app.get("/api/search")
 def search_nodes(q: str):
     """
-    Search for Person, Company, or Skill by name.
+    Search for Person, Company, or Skill by matching any word in the query.
     """
+    words = [word.lower() for word in q.split() if word.strip()]
+    if not words:
+        return {"results": []}
+        
     query = """
     MATCH (n)
     WHERE (n:Person OR n:Company OR n:Skill) 
-      AND toLower(n.name) CONTAINS toLower($q)
+      AND any(w IN $words WHERE toLower(n.name) CONTAINS w)
     RETURN elementId(n) AS id, labels(n)[0] AS type, n.name AS name, n.role AS role, n.industry AS industry
     LIMIT 20
     """
     try:
-        results = db.execute_query(query, {"q": q})
+        results = db.execute_query(query, {"words": words})
         return {"results": results}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
@@ -64,34 +68,16 @@ def find_shortest_path(start_id: str, end_id: str):
     MATCH (start) WHERE elementId(start) = $start_id
     MATCH (end) WHERE elementId(end) = $end_id
     MATCH p = shortestPath((start)-[*]-(end))
-    RETURN nodes(p) AS nodes, relationships(p) AS edges
+    RETURN 
+        [n in nodes(p) | {id: elementId(n), type: labels(n)[0], properties: properties(n)}] AS nodes,
+        [r in relationships(p) | {id: elementId(r), type: type(r), source: elementId(startNode(r)), target: elementId(endNode(r)), properties: properties(r)}] AS edges
     """
     try:
         results = db.execute_query(query, {"start_id": start_id, "end_id": end_id})
         if not results:
             return {"path": None, "message": "No path found between these nodes."}
             
-        # Parse path into nodes and edges for the frontend
-        path_data = results[0]
-        nodes = []
-        for n in path_data['nodes']:
-            nodes.append({
-                "id": n.element_id,
-                "type": list(n.labels)[0] if n.labels else "Unknown",
-                "properties": dict(n)
-            })
-            
-        edges = []
-        for r in path_data['edges']:
-            edges.append({
-                "id": r.element_id,
-                "type": r.type,
-                "source": r.start_node.element_id,
-                "target": r.end_node.element_id,
-                "properties": dict(r)
-            })
-            
-        return {"path": {"nodes": nodes, "edges": edges}}
+        return {"path": {"nodes": results[0]["nodes"], "edges": results[0]["edges"]}}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

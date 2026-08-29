@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Toaster, toast } from 'react-hot-toast';
 import SearchBox from './components/SearchBox';
 import NodeCard from './components/NodeCard';
 import PathVisualizer from './components/PathVisualizer';
@@ -14,7 +15,6 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   
   // Recommend State
   const [selectedPerson, setSelectedPerson] = useState(null);
@@ -26,26 +26,43 @@ function App() {
   const [pathEndId, setPathEndId] = useState('');
   const [pathData, setPathData] = useState(null);
   const [pathLoading, setPathLoading] = useState(false);
-  const [pathError, setPathError] = useState(null);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
+  const performSearch = async (query) => {
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
     
     setLoading(true);
-    setError(null);
     setResults([]);
     setSelectedPerson(null);
     setViewMode('explore');
     
     try {
-      const data = await apiControllers.searchNodes(searchQuery);
+      const data = await apiControllers.searchNodes(query);
       setResults(data.results);
     } catch (err) {
-      setError("Cannot connect to database. Make sure backend is running.");
+      toast.error("Cannot connect to database. Make sure backend is running.");
     } finally {
       setLoading(false);
     }
+  };
+
+  // Real-time debounced search
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchQuery.trim()) {
+        performSearch(searchQuery);
+      } else {
+        setResults([]);
+      }
+    }, 300);
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    performSearch(searchQuery);
   };
 
   const loadRecommendations = async (person) => {
@@ -58,6 +75,7 @@ function App() {
       setRecommendations(data.recommendations);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to load recommendations.");
     } finally {
       setRecLoading(false);
     }
@@ -68,7 +86,6 @@ function App() {
     if (!pathStartId.trim() || !pathEndId.trim()) return;
     
     setPathLoading(true);
-    setPathError(null);
     setPathData(null);
     
     try {
@@ -76,10 +93,10 @@ function App() {
       if (data.path) {
         setPathData(data.path);
       } else {
-        setPathError(data.message || "No path found.");
+        toast.error(data.message || "No path found.");
       }
     } catch (err) {
-      setPathError("Failed to calculate path. Ensure node IDs are correct.");
+      toast.error("Failed to calculate path. Ensure node IDs are correct.");
     } finally {
       setPathLoading(false);
     }
@@ -87,6 +104,7 @@ function App() {
 
   return (
     <div className="app-container">
+      <Toaster position="bottom-center" />
       <div className="header-container animate-fade-in-down">
         <h1 className="main-title">Six Degrees of Tech</h1>
         <p className="subtitle">Explore connections between People, Companies, and Skills in the Graph.</p>
@@ -118,8 +136,6 @@ function App() {
             handleSearch={handleSearch} 
             loading={loading} 
           />
-          
-          {error && <p className="error-text">{error}</p>}
 
           {!loading && results.length > 0 && (
             <div className="grid-container">
@@ -129,7 +145,7 @@ function App() {
             </div>
           )}
           
-          {!loading && results.length === 0 && searchQuery && !error && (
+          {!loading && results.length === 0 && searchQuery && (
             <div className="glass-panel empty-state">
               <p>No results found for "{searchQuery}". Try a different term.</p>
             </div>
@@ -210,8 +226,6 @@ function App() {
               </div>
             </form>
           </div>
-
-          {pathError && <p className="error-text">{pathError}</p>}
           
           <PathVisualizer pathData={pathData} />
         </div>

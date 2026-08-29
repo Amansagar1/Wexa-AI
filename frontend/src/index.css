@@ -545,3 +545,33 @@ body {
   height: 20px;
   border-width: 2px;
 }
+
+/* Node ID Tag */
+.node-id-tag {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--surface-border);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: copy;
+  transition: all 0.2s;
+  user-select: all;
+}
+
+.node-id-tag:hover {
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--text-main);
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+.id-label {
+  font-weight: 600;
+  color: var(--primary-color);
+  user-select: none;
+}
