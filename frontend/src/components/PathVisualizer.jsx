@@ -5,6 +5,8 @@ export default function PathVisualizer({ pathData }) {
   const containerRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
 
+  const fgRef = useRef();
+
   useEffect(() => {
     if (containerRef.current) {
       setDimensions({
@@ -26,6 +28,14 @@ export default function PathVisualizer({ pathData }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [pathData]);
 
+  // Adjust physics forces when graph data changes
+  useEffect(() => {
+    if (fgRef.current) {
+      fgRef.current.d3Force('charge').strength(-600); // Push nodes further apart
+      fgRef.current.d3Force('link').distance(150); // Make links longer
+    }
+  }, [pathData]);
+
   if (!pathData) return null;
   if (!pathData.nodes || pathData.nodes.length === 0) {
     return <p className="empty-state">No path found between these nodes.</p>;
@@ -38,7 +48,7 @@ export default function PathVisualizer({ pathData }) {
       name: n.properties.name,
       group: n.type,
       properties: n.properties,
-      val: 1.5
+      val: 1
     })),
     links: pathData.edges.map(e => ({
       source: e.source,
@@ -49,9 +59,9 @@ export default function PathVisualizer({ pathData }) {
 
   const getNodeColor = (group) => {
     switch(group) {
-      case 'Person': return { main: '#3b82f6', light: '#93c5fd' }; // Blue (like screenshot)
-      case 'Company': return { main: '#10b981', light: '#6ee7b7' }; // Green
-      case 'Skill': return { main: '#ef4444', light: '#fca5a5' }; // Red
+      case 'Person': return { main: '#3b82f6', light: '#93c5fd' }; 
+      case 'Company': return { main: '#10b981', light: '#6ee7b7' }; 
+      case 'Skill': return { main: '#ef4444', light: '#fca5a5' }; 
       default: return { main: '#64748b', light: '#cbd5e1' };
     }
   };
@@ -91,16 +101,17 @@ export default function PathVisualizer({ pathData }) {
       </div>
 
       <ForceGraph2D
+        ref={fgRef}
         width={dimensions.width}
         height={dimensions.height}
         graphData={graphData}
-        nodeRelSize={8}
-        linkColor={() => 'rgba(255,255,255,0.2)'}
-        linkDirectionalArrowLength={4}
+        nodeRelSize={6}
+        linkColor={() => 'rgba(255,255,255,0.25)'}
+        linkDirectionalArrowLength={3.5}
         linkDirectionalArrowRelPos={1}
         linkWidth={1.5}
         backgroundColor="#0b0f19"
-        d3VelocityDecay={0.3}
+        d3VelocityDecay={0.2}
         
         // Rich Tooltip on Hover
         nodeLabel={(node) => `
@@ -118,9 +129,9 @@ export default function PathVisualizer({ pathData }) {
         linkCanvasObject={(link, ctx, globalScale) => {
           if (!link.source || !link.target || typeof link.source !== 'object' || typeof link.target !== 'object' || typeof link.source.x !== 'number') return;
           
-          const MAX_FONT_SIZE = 4;
+          const MAX_FONT_SIZE = 3.5;
           const label = link.label;
-          const fontSize = Math.min(MAX_FONT_SIZE, 12 / globalScale);
+          const fontSize = Math.min(MAX_FONT_SIZE, 10 / globalScale);
           ctx.font = `${fontSize}px Inter, Sans-Serif`;
           
           const textPos = {
@@ -130,7 +141,7 @@ export default function PathVisualizer({ pathData }) {
           
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
           ctx.fillText(label, textPos.x, textPos.y);
         }}
         
@@ -139,9 +150,9 @@ export default function PathVisualizer({ pathData }) {
           if (!node || typeof node.x !== 'number' || typeof node.y !== 'number') return;
           
           const label = node.name || '';
-          const fontSize = 12 / globalScale;
+          const fontSize = 10 / globalScale;
           const colors = getNodeColor(node.group);
-          const r = 8;
+          const r = 6; // Smaller radius
           
           // Draw 3D Sphere Node
           const gradient = ctx.createRadialGradient(node.x - r/3, node.y - r/3, r/10, node.x, node.y, r);
@@ -154,7 +165,7 @@ export default function PathVisualizer({ pathData }) {
           
           // Outer Glow
           ctx.shadowColor = colors.main;
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = 10;
           ctx.fill();
           ctx.shadowBlur = 0; // Reset
           
@@ -163,13 +174,13 @@ export default function PathVisualizer({ pathData }) {
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
           ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-          ctx.fillText(label, node.x, node.y + r + (4/globalScale));
+          ctx.fillText(label, node.x, node.y + r + (3/globalScale));
         }}
         nodePointerAreaPaint={(node, color, ctx) => {
           if (!node || typeof node.x !== 'number' || typeof node.y !== 'number') return;
           ctx.fillStyle = color;
           ctx.beginPath();
-          ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI, false);
+          ctx.arc(node.x, node.y, 6, 0, 2 * Math.PI, false);
           ctx.fill();
         }}
       />
